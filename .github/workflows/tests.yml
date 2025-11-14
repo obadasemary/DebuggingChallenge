@@ -15,7 +15,7 @@ permissions:
 
 jobs:
     run-unit-tests:
-        runs-on: ubuntu-latest
+        runs-on: macos-latest
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v4
@@ -23,9 +23,14 @@ jobs:
                 fetch-depth: 0
               timeout-minutes: 6
 
-            - name: Run Sanity Check tests
-              uses: speechify-recruiting/debugging-test-action@main
-              id: debugging-test-action
-              timeout-minutes: 5
-              env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: List available simulators
+              run: xcrun simctl list devices available
+
+            - name: Run unit tests
+              run: |
+                  xcodebuild test \
+                    -project DebuggingChallenge.xcodeproj \
+                    -scheme DebuggingChallenge \
+                    -destination 'platform=iOS Simulator,name=iPhone 15' \
+                    -quiet
+              timeout-minutes: 10
