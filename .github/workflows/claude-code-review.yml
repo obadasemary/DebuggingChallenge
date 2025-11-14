@@ -24,6 +24,7 @@ jobs:
       pull-requests: write
       issues: read
       id-token: write
+      actions: read
 
     steps:
       - name: Checkout repository
@@ -34,22 +35,26 @@ jobs:
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
-            REPO: ${{ github.repository }}
-            PR NUMBER: ${{ github.event.pull_request.number }}
-
-            Please review this pull request and provide feedback on:
-            - Code quality and best practices
-            - Potential bugs or issues
-            - Performance considerations
-            - Security concerns
-            - Test coverage
-
-            Use the repository's CLAUDE.md for guidance on style and conventions. Be constructive and helpful in your feedback.
-
-            Use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
+            You are reviewing pull request #${{ github.event.pull_request.number }}.
+            
+            Steps:
+            1. Use `gh pr view ${{ github.event.pull_request.number }}` to see PR details
+            2. Use `gh pr diff ${{ github.event.pull_request.number }}` to see code changes
+            3. Review the changes considering:
+               - Code quality and best practices
+               - Potential bugs or issues
+               - Performance considerations
+               - Security concerns
+               - Test coverage
+            4. Reference CLAUDE.md for project conventions
+            5. Post your review as a comment using: gh pr comment ${{ github.event.pull_request.number }} --body "Your review here"
+            
+            Be constructive and helpful in your feedback.
 
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options
