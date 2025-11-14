@@ -15,13 +15,13 @@ This is an iOS debugging challenge project built with SwiftUI. The application i
 xcodebuild -project DebuggingChallenge.xcodeproj -scheme DebuggingChallenge build
 
 # Run tests
-xcodebuild test -project DebuggingChallenge.xcodeproj -scheme DebuggingChallenge -destination 'platform=iOS Simulator,name=iPhone 15'
+xcodebuild test -project DebuggingChallenge.xcodeproj -scheme DebuggingChallenge -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 
 # Run specific test class
-xcodebuild test -project DebuggingChallenge.xcodeproj -scheme DebuggingChallenge -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:DebuggingChallengeTests/DefaultReminderServiceTests
+xcodebuild test -project DebuggingChallenge.xcodeproj -scheme DebuggingChallenge -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -only-testing:DebuggingChallengeTests/DefaultReminderServiceTests
 
 # Run single test method
-xcodebuild test -project DebuggingChallenge.xcodeproj -scheme DebuggingChallenge -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:DebuggingChallengeTests/DefaultReminderServiceTests/testFetchReminders
+xcodebuild test -project DebuggingChallenge.xcodeproj -scheme DebuggingChallenge -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -only-testing:DebuggingChallengeTests/DefaultReminderServiceTests/testFetchReminders
 ```
 
 ## Architecture Overview
