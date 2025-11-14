@@ -28,199 +28,97 @@ final class CallbackReminderServiceTests: XCTestCase {
     // MARK: - fetchRemindersWithBarrier Tests
 
     func testFetchRemindersWithBarrier() {
-        let expectation = expectation(description: "Should fetch all reminders using barrier")
-
-        sut.fetchRemindersWithBarrier { reminders in
-            XCTAssertEqual(reminders.count, 12, "Expected 12 reminders to be returned")
-
-            let uniqueIds = Set(reminders.map { $0.id })
-            XCTAssertEqual(uniqueIds.count, 12, "All reminders should have unique IDs")
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 2.0)
+        assertBasicFetch(
+            for: sut.fetchRemindersWithBarrier,
+            description: "Should fetch all reminders using barrier"
+        )
     }
 
     func testFetchRemindersWithBarrier_VerifyParallelExecution() {
-        let expectation = expectation(description: "Should fetch reminders in parallel using barrier")
-        let startTime = Date()
-
-        sut.fetchRemindersWithBarrier { reminders in
-            let elapsedTime = Date().timeIntervalSince(startTime)
-
-            XCTAssertEqual(reminders.count, 12, "Expected 12 reminders")
-            // Note: Barrier writes add some synchronization overhead
-            XCTAssertLessThan(elapsedTime, 1.0, "Parallel execution should complete in less than 1.0s")
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 2.0)
+        assertParallelExecution(
+            for: sut.fetchRemindersWithBarrier,
+            description: "Should fetch reminders in parallel using barrier",
+            maxTime: 1.0
+        )
     }
 
     func testFetchRemindersWithBarrier_VerifyReminderContent() {
-        let expectation = expectation(description: "Should fetch valid reminder objects using barrier")
-
-        sut.fetchRemindersWithBarrier { reminders in
-            XCTAssertEqual(reminders.count, 12)
-
-            for reminder in reminders {
-                XCTAssertFalse(reminder.message.isEmpty, "Reminder message should not be empty")
-            }
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 2.0)
+        assertReminderContent(
+            for: sut.fetchRemindersWithBarrier,
+            description: "Should fetch valid reminder objects using barrier"
+        )
     }
 
     // MARK: - fetchRemindersWithSemaphore Tests
 
     func testFetchRemindersWithSemaphore() {
-        let expectation = expectation(description: "Should fetch all reminders using semaphore")
-
-        sut.fetchRemindersWithSemaphore { reminders in
-            XCTAssertEqual(reminders.count, 12, "Expected 12 reminders to be returned")
-
-            let uniqueIds = Set(reminders.map { $0.id })
-            XCTAssertEqual(uniqueIds.count, 12, "All reminders should have unique IDs")
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 2.0)
+        assertBasicFetch(
+            for: sut.fetchRemindersWithSemaphore,
+            description: "Should fetch all reminders using semaphore"
+        )
     }
 
     func testFetchRemindersWithSemaphore_VerifyParallelExecution() {
-        let expectation = expectation(description: "Should fetch reminders using semaphore")
-        let startTime = Date()
-
-        sut.fetchRemindersWithSemaphore { reminders in
-            let elapsedTime = Date().timeIntervalSince(startTime)
-
-            XCTAssertEqual(reminders.count, 12, "Expected 12 reminders")
-            // Note: Semaphore serializes writes, so it's slightly slower than truly parallel approaches
-            XCTAssertLessThan(elapsedTime, 1.0, "Should complete in less than 1.0s")
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 2.0)
+        assertParallelExecution(
+            for: sut.fetchRemindersWithSemaphore,
+            description: "Should fetch reminders using semaphore",
+            maxTime: 1.0
+        )
     }
 
     func testFetchRemindersWithSemaphore_VerifyReminderContent() {
-        let expectation = expectation(description: "Should fetch valid reminder objects using semaphore")
-
-        sut.fetchRemindersWithSemaphore { reminders in
-            XCTAssertEqual(reminders.count, 12)
-
-            for reminder in reminders {
-                XCTAssertFalse(reminder.message.isEmpty, "Reminder message should not be empty")
-            }
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 2.0)
+        assertReminderContent(
+            for: sut.fetchRemindersWithSemaphore,
+            description: "Should fetch valid reminder objects using semaphore"
+        )
     }
 
     // MARK: - fetchRemindersWithLock Tests
 
     func testFetchRemindersWithLock() {
-        let expectation = expectation(description: "Should fetch all reminders using NSLock")
-
-        sut.fetchRemindersWithLock { reminders in
-            XCTAssertEqual(reminders.count, 12, "Expected 12 reminders to be returned")
-
-            let uniqueIds = Set(reminders.map { $0.id })
-            XCTAssertEqual(uniqueIds.count, 12, "All reminders should have unique IDs")
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 2.0)
+        assertBasicFetch(
+            for: sut.fetchRemindersWithLock,
+            description: "Should fetch all reminders using NSLock"
+        )
     }
 
     func testFetchRemindersWithLock_VerifyParallelExecution() {
-        let expectation = expectation(description: "Should fetch reminders using NSLock")
-        let startTime = Date()
-
-        sut.fetchRemindersWithLock { reminders in
-            let elapsedTime = Date().timeIntervalSince(startTime)
-
-            XCTAssertEqual(reminders.count, 12, "Expected 12 reminders")
-            XCTAssertLessThan(elapsedTime, 1.0, "Should complete in less than 1.0s")
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 2.0)
+        assertParallelExecution(
+            for: sut.fetchRemindersWithLock,
+            description: "Should fetch reminders using NSLock",
+            maxTime: 1.0
+        )
     }
 
     func testFetchRemindersWithLock_VerifyReminderContent() {
-        let expectation = expectation(description: "Should fetch valid reminder objects using NSLock")
-
-        sut.fetchRemindersWithLock { reminders in
-            XCTAssertEqual(reminders.count, 12)
-
-            for reminder in reminders {
-                XCTAssertFalse(reminder.message.isEmpty, "Reminder message should not be empty")
-            }
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 2.0)
+        assertReminderContent(
+            for: sut.fetchRemindersWithLock,
+            description: "Should fetch valid reminder objects using NSLock"
+        )
     }
 
     // MARK: - fetchRemindersWithSerialQueue Tests
 
     func testFetchRemindersWithSerialQueue() {
-        let expectation = expectation(description: "Should fetch all reminders using serial queue")
-
-        sut.fetchRemindersWithSerialQueue { reminders in
-            XCTAssertEqual(reminders.count, 12, "Expected 12 reminders to be returned")
-
-            let uniqueIds = Set(reminders.map { $0.id })
-            XCTAssertEqual(uniqueIds.count, 12, "All reminders should have unique IDs")
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 2.0)
+        assertBasicFetch(
+            for: sut.fetchRemindersWithSerialQueue,
+            description: "Should fetch all reminders using serial queue"
+        )
     }
 
     func testFetchRemindersWithSerialQueue_VerifyParallelExecution() {
-        let expectation = expectation(description: "Should fetch reminders using serial queue")
-        let startTime = Date()
-
-        sut.fetchRemindersWithSerialQueue { reminders in
-            let elapsedTime = Date().timeIntervalSince(startTime)
-
-            XCTAssertEqual(reminders.count, 12, "Expected 12 reminders")
-            XCTAssertLessThan(elapsedTime, 1.0, "Should complete in less than 1.0s")
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 2.0)
+        assertParallelExecution(
+            for: sut.fetchRemindersWithSerialQueue,
+            description: "Should fetch reminders using serial queue",
+            maxTime: 1.0
+        )
     }
 
     func testFetchRemindersWithSerialQueue_VerifyReminderContent() {
-        let expectation = expectation(description: "Should fetch valid reminder objects using serial queue")
-
-        sut.fetchRemindersWithSerialQueue { reminders in
-            XCTAssertEqual(reminders.count, 12)
-
-            for reminder in reminders {
-                XCTAssertFalse(reminder.message.isEmpty, "Reminder message should not be empty")
-            }
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 2.0)
+        assertReminderContent(
+            for: sut.fetchRemindersWithSerialQueue,
+            description: "Should fetch valid reminder objects using serial queue"
+        )
     }
 
     // MARK: - Comparison Tests
@@ -266,4 +164,73 @@ final class CallbackReminderServiceTests: XCTestCase {
         XCTAssertEqual(countSemaphore, countLock, "All implementations should return same count")
         XCTAssertEqual(countLock, countSerialQueue, "All implementations should return same count")
     }
+}
+
+private extension CallbackReminderServiceTests {
+    
+    // MARK: - Helper Functions
+
+    private func assertBasicFetch(
+        for method: (@escaping ([Reminder]) -> Void) -> Void,
+        description: String,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        let expectation = expectation(description: description)
+
+        method { reminders in
+            XCTAssertEqual(reminders.count, 12, "Expected 12 reminders", file: file, line: line)
+
+            let uniqueIds = Set(reminders.map { $0.id })
+            XCTAssertEqual(uniqueIds.count, 12, "All reminders should have unique IDs", file: file, line: line)
+
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 2.0)
+    }
+
+    private func assertParallelExecution(
+        for method: (@escaping ([Reminder]) -> Void) -> Void,
+        description: String,
+        maxTime: TimeInterval = 1.0,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        let expectation = expectation(description: description)
+        let startTime = Date()
+
+        method { reminders in
+            let elapsedTime = Date().timeIntervalSince(startTime)
+
+            XCTAssertEqual(reminders.count, 12, "Expected 12 reminders", file: file, line: line)
+            XCTAssertLessThan(elapsedTime, maxTime, "Should complete in less than \(maxTime)s", file: file, line: line)
+
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 2.0)
+    }
+
+    private func assertReminderContent(
+        for method: (@escaping ([Reminder]) -> Void) -> Void,
+        description: String,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        let expectation = expectation(description: description)
+
+        method { reminders in
+            XCTAssertEqual(reminders.count, 12, file: file, line: line)
+
+            for reminder in reminders {
+                XCTAssertFalse(reminder.message.isEmpty, "Reminder message should not be empty", file: file, line: line)
+            }
+
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 2.0)
+    }
+
 }
