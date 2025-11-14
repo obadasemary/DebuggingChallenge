@@ -11,7 +11,12 @@
       "Bash(git checkout:*)",
       "Bash(gh pr create:*)",
       "Bash(gh pr view:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nAdd alternative Swift Concurrency approaches for fetchRemindersAsync\n\nAdded documentation comments showing four different approaches to implement\nparallel async operations in Swift:\n\n1. TaskGroup with for-await (current implementation) - Iterative collection\n2. async let - Clean syntax for fixed number of concurrent calls\n3. Task Array - Useful when task references need to be stored\n4. TaskGroup with reduce - Functional programming style\n\nAll alternative approaches are commented out to maintain the working\nimplementation while providing educational reference for different patterns.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
