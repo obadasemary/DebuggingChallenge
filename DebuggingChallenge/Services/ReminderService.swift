@@ -71,9 +71,6 @@ final class DefaultReminderService: ReminderService {
             .eraseToAnyPublisher()
     }
 
-    // MARK: - Swift Concurrency Approach #1: TaskGroup with for-await
-    // Uses structured concurrency with TaskGroup to spawn multiple parallel tasks
-    // and collect results iteratively
     func fetchRemindersAsync() async -> [Reminder] {
         await withTaskGroup(of: [Reminder].self) { group in
             for _ in 0..<3 {
@@ -91,61 +88,6 @@ final class DefaultReminderService: ReminderService {
             return allReminders
         }
     }
-
-    // MARK: - Swift Concurrency Approach #2: async let
-    // Uses async let bindings for fixed number of parallel operations
-    // Clean syntax for when you know the exact number of concurrent calls
-    /*
-    func fetchRemindersAsync() async -> [Reminder] {
-        async let reminders1 = dataSource.fetchReminders()
-        async let reminders2 = dataSource.fetchReminders()
-        async let reminders3 = dataSource.fetchReminders()
-
-        let results = await [reminders1, reminders2, reminders3]
-        return results.flatMap { $0 }
-    }
-    */
-
-    // MARK: - Swift Concurrency Approach #3: Task Array
-    // Creates an array of Tasks and awaits them all
-    // Useful when you need to store task references
-    /*
-    func fetchRemindersAsync() async -> [Reminder] {
-        let tasks = (0..<3).map { _ in
-            Task {
-                await dataSource.fetchReminders()
-            }
-        }
-
-        var allReminders: [Reminder] = []
-
-        for task in tasks {
-            let reminders = await task.value
-            allReminders.append(contentsOf: reminders)
-        }
-
-        return allReminders
-    }
-    */
-
-    // MARK: - Swift Concurrency Approach #4: TaskGroup with reduce
-    // Uses TaskGroup but collects results functionally with reduce
-    // More functional programming style
-    /*
-    func fetchRemindersAsync() async -> [Reminder] {
-        await withTaskGroup(of: [Reminder].self) { group in
-            for _ in 0..<3 {
-                group.addTask {
-                    await self.dataSource.fetchReminders()
-                }
-            }
-
-            return await group.reduce(into: [Reminder]()) { result, reminders in
-                result.append(contentsOf: reminders)
-            }
-        }
-    }
-    */
 }
 /*
  *****************************************************************************
