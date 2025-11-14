@@ -14,13 +14,11 @@ class AnalyticsViewModel: ObservableObject {
 
     @MainActor
     func loadAnalytics() async {
-        Task {
-            isLoading = true
-            async let details = analyticsService.fetchAnalyticsDetails()
-            async let projects = projectService.fetchProjects()
-            analyticsDetails = await details
-            recentProjects = await projects
-            isLoading = false
-        }
+        isLoading = true
+        async let details = analyticsService.fetchAnalyticsDetails()
+        async let projects = projectService.fetchProjects()
+        analyticsDetails = await details
+        recentProjects = await projects
+        isLoading = false
     }
 }

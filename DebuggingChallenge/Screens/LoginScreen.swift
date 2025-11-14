@@ -25,7 +25,7 @@ struct LoginScreen: View {
     var body: some View {
         let sessionService = sessionServiceWrapper.service
         VStack(spacing: 32) {
-            SecurityBannerView(sessionService: sessionService)
+            SecurityBannerView(username: auth.username, sessionService: sessionService)
             LoginFormView(sessionService: sessionService, onSuccess: onSuccess)
         }
         .padding(24)

@@ -14,13 +14,14 @@ class LoaderView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayers()
-        if animated {
-            startTimer()
-        }
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        timer?.invalidate()
     }
 
     private func setupLayers() {
@@ -49,14 +50,21 @@ class LoaderView: UIView {
         progressLayer.path = circularPath.cgPath
     }
 
-    private func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 0.04, repeats: true) { [unowned self] _ in
-            progressSubject.value += 0.1
-            if progressSubject.value > 1.0 {
-                progressSubject.value = 0.0
+    func startTimer() {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 0.04, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            self.progressSubject.value += 0.1
+            if self.progressSubject.value > 1.0 {
+                self.progressSubject.value = 0.0
             }
-            progressLayer.strokeEnd = CGFloat(progressSubject.value)
+            self.progressLayer.strokeEnd = CGFloat(self.progressSubject.value)
         }
+    }
+
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
     }
 }
 
@@ -72,18 +80,28 @@ struct Loader: UIViewRepresentable {
         let view = LoaderView(frame: .zero)
         view.progressSubject
             .sink { context.coordinator.updateProgress($0) }
-            .store(in: &context.coordinator.subscriptons)
+            .store(in: &context.coordinator.subscriptions)
         view.animated = animated
+        if animated {
+            view.startTimer()
+        }
         return view
     }
 
     func updateUIView(_ uiView: LoaderView, context: Context) {
-        uiView.animated = animated
+        if animated != uiView.animated {
+            uiView.animated = animated
+            if animated {
+                uiView.startTimer()
+            } else {
+                uiView.stopTimer()
+            }
+        }
     }
 
     class Coordinator: NSObject {
         var progress: Binding<Float>
-        var subscriptons = Set<AnyCancellable>()
+        var subscriptions = Set<AnyCancellable>()
 
         init(progress: Binding<Float>) {
             self.progress = progress

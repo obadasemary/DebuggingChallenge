@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xcodebuild -list:*)",
+      "Bash(xcodebuild test:*)",
+      "Bash(xcodebuild clean:*)",
+      "Bash(xcrun simctl:*)",
+      "Bash(xcodebuild build:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

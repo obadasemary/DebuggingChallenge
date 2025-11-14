@@ -11,15 +11,9 @@ class AnalyticsDetailsViewModel: ObservableObject {
 
     @MainActor
     func loadRecentProjects() async {
-        Task {
-            isLoading = true
-            do {
-                let projects = await projectService.fetchProjects()
-                recentProjects = projects
-            } catch {
-                print("error \(error.localizedDescription)")
-            }
-            isLoading = false
-        }
+        isLoading = true
+        let projects = await projectService.fetchProjects()
+        recentProjects = projects
+        isLoading = false
     }
 }

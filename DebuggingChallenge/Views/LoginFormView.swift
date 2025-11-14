@@ -8,7 +8,7 @@ struct LoginFormView: View {
     @State private var tempPassword: String = ""
 
     private var isInvalid: Bool {
-        auth.username.isEmpty || tempPassword.isEmpty
+        tempUsername.isEmpty || tempPassword.isEmpty
     }
 
     var body: some View {
