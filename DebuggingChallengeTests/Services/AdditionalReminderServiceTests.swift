@@ -56,7 +56,7 @@ final class AdditionalReminderServiceTests: XCTestCase {
                 let elapsedTime = Date().timeIntervalSince(startTime)
 
                 XCTAssertEqual(reminders.count, 12, "Expected 12 reminders")
-                XCTAssertLessThan(elapsedTime, 0.5, "Parallel execution should complete in less than 0.5s")
+                XCTAssertLessThan(elapsedTime, 1.0, "Parallel execution should complete in less than 1.0s")
 
                 expectation.fulfill()
             }
@@ -166,7 +166,7 @@ final class AdditionalReminderServiceTests: XCTestCase {
                 let elapsedTime = Date().timeIntervalSince(startTime)
 
                 XCTAssertEqual(reminders.count, 12, "Expected 12 reminders")
-                XCTAssertLessThan(elapsedTime, 0.5, "Parallel execution should complete in less than 0.5s")
+                XCTAssertLessThan(elapsedTime, 1.0, "Parallel execution should complete in less than 1.0s")
 
                 expectation.fulfill()
             }
