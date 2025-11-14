@@ -15,7 +15,7 @@ permissions:
 
 jobs:
     run-unit-tests:
-        runs-on: macos-latest
+        runs-on: macos-26
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v4
@@ -31,6 +31,6 @@ jobs:
                   xcodebuild test \
                     -project DebuggingChallenge.xcodeproj \
                     -scheme DebuggingChallenge \
-                    -destination 'platform=iOS Simulator,name=iPhone 15' \
+                    -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
                     -quiet
               timeout-minutes: 10
