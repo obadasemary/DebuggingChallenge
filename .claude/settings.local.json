@@ -7,7 +7,8 @@
       "Bash(xcrun simctl:*)",
       "Bash(xcodebuild build:*)",
       "Bash(xcodebuild:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []
